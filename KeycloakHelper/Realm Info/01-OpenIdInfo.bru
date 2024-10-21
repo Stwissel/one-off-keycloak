@@ -1,0 +1,22 @@
+meta {
+  name: 01 OpenID Info for REALM
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{KEYCLOAK_URL}}/realms/{{REALM_NAME}}/.well-known/openid-configuration
+  body: none
+  auth: none
+}
+
+vars:post-response {
+  JWKS_URI: res.body.jwks_uri
+}
+
+assert {
+  res.status: eq 200
+  res.headers['content-type']: startsWith application/json
+  res.body: isJson
+  res.body.jwks_uri: isString
+}

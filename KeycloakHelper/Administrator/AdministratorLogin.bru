@@ -1,0 +1,31 @@
+meta {
+  name: Administrator Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{KEYCLOAK_URL}}/realms/master/protocol/openid-connect/token
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  client_id: admin-cli
+  username: {{ADMIN_USERNAME}}
+  password: {{ADMIN_PASSWORD}}
+  grant_type: password
+}
+
+vars:post-response {
+  KEYCLOAK_ACCESS_TOKEN: res.body.access_token
+  KEYCLOAK_REFRESH_TOKEN: res.body.refresh_token
+}
+
+assert {
+  res.body: isJson
+  res.headers['content-type']: eq application/json
+  res.status: eq 200
+  res.body.access_token: isString
+  res.body.refresh_token: isString
+}

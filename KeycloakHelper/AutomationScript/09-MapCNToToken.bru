@@ -1,0 +1,39 @@
+meta {
+  name: 09 Map CN to Token
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/{{CLIENT_ID}}/protocol-mappers/models
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+body:json {
+  {
+      "protocol": "openid-connect",
+      "protocolMapper": "oidc-usermodel-attribute-mapper",
+      "name": "DominoCN",
+      "config": {
+          "claim.name": "CN",
+          "jsonType.label": "String",
+          "id.token.claim": "true",
+          "access.token.claim": "true",
+          "lightweight.claim": "false",
+          "userinfo.token.claim": "true",
+          "introspection.token.claim": "true",
+          "user.attribute": "CN"
+      }
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.headers['location']: isDefined
+  res.headers['location']: startsWith {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/
+}

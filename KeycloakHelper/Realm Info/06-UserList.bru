@@ -1,0 +1,42 @@
+meta {
+  name: 06 List of users
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/users
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+assert {
+  res.status: eq 200
+  res.headers['content-type']: isDefined
+  res.headers['content-type']: eq application/json;charset=UTF-8
+  res.body: isArray
+}
+
+tests {
+
+  // Look for client
+  test("Capture user id", function () {
+       let ourUser = bru.getEnvVar('USER_NAME');
+       let userId;
+       let responseJSON = res.getBody();
+       expect(responseJSON).to.be.an('array');
+       responseJSON.forEach((user) => {
+              expect(user).to.have.property('username');
+              if (user.username === ourUser) {
+                  userId = user.id;
+              }
+       });
+       expect(userId).not.undefined;
+       bru.setVar('USER_ID', userId);
+
+  });
+}

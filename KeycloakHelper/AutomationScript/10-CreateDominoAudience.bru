@@ -1,0 +1,37 @@
+meta {
+  name: 10 Create Domino Audience
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/{{CLIENT_ID}}/protocol-mappers/models
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+body:json {
+  {
+      "protocol": "openid-connect",
+      "protocolMapper": "oidc-audience-mapper",
+      "name": "DominoMapper",
+      "config": {
+          "included.client.audience": "",
+          "included.custom.audience": "Domino",
+          "id.token.claim": "false",
+          "access.token.claim": "true",
+          "lightweight.claim": "false",
+          "introspection.token.claim": "true"
+      }
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.headers['location']: isDefined
+  res.headers['location']: startsWith {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/{{CLIENT_ID}}/protocol-mappers/models/
+}

@@ -1,0 +1,50 @@
+meta {
+  name: 08 Create attribute CN
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/users/profile
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+body:json {
+  {{UserProfile}}
+}
+
+assert {
+  res.status: eq 200
+  res.headers['content-type']: isDefined
+  res.headers['content-type']: eq application/json
+  res.body: isJson
+  res.body.attributes: isArray
+  res.body.groups: isArray
+}
+
+script:pre-request {
+  let userProfile = JSON.parse(bru.getVar('UserProfile'));
+  let attributes = userProfile.attributes;
+      let cn = {
+              "name": "CN",
+              "displayName": "Domino Common Name",
+              "permissions": {
+                  "edit": [
+                      "admin"
+                  ],
+                  "view": [
+                      "user"
+                  ]
+              },
+              "multivalued": false,
+              "annotations": {},
+              "validations": {}
+          };
+          attributes.push(cn);
+          bru.setVar('UserProfile', JSON.stringify(userProfile));
+}

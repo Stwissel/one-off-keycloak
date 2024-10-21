@@ -1,0 +1,17 @@
+meta {
+  name: 02 Get jwks for REALM
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{JWKS_URI}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isJson
+  res.body.keys: isArray
+}

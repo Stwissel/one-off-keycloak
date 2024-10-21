@@ -1,0 +1,32 @@
+meta {
+  name: 12 Login User
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{KEYCLOAK_URL}}/realms/{{REALM_NAME}}/protocol/openid-connect/token
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  grant_type: password
+  username: {{USER_NAME}}
+  password: {{USER_PASSWORD}}
+  client_id: {{CLIENT_NAME}}
+}
+
+vars:post-response {
+  KEYCLOAK_USER_ACCESS_TOKEN: res.body.access_token
+  KEYCLOAK_USER_REFRESH_TOKEN: res.body.refresh_token
+}
+
+assert {
+  res.status: eq 200
+  res.headers['content-type']: isDefined
+  res.headers['content-type']: eq application/json
+  res.body: isJson
+  res.body.access_token: isString
+  res.body.refresh_token: isString
+}

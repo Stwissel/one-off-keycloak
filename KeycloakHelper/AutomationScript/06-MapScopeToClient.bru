@@ -1,0 +1,25 @@
+meta {
+  name: 06 Map Scope to Client
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/{{CLIENT_ID}}/default-client-scopes/{{SCOPE_ID}}
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+body:json {
+  {}
+}
+
+assert {
+  res.status: eq 201
+  res.headers['location']: isDefined
+  res.headers['location']: startsWith {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/client-scopes/
+}

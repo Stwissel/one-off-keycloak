@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Keycloak Helper",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

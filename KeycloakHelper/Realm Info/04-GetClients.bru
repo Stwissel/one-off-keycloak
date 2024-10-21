@@ -1,0 +1,40 @@
+meta {
+  name: 04 Get List of clients
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+assert {
+  res.status: eq 200
+  res.headers['content-type']: isDefined
+  res.headers['content-type']: eq application/json;charset=UTF-8
+  res.body: isArray
+}
+
+tests {
+  // Look for client
+  test("Capture client id", function () {
+       let ourClient = bru.getEnvVar('CLIENT_NAME');
+       let clientId;
+       let responseJSON = res.getBody();
+       expect(responseJSON).to.be.an('array');
+       responseJSON.forEach((client) => {
+              expect(client).to.have.property('clientId');
+              if (client.clientId === ourClient) {
+                  clientId = client.id;
+              }
+       });
+       expect(clientId).not.undefined;
+       bru.setVar("CLIENT_ID",clientId)
+  });
+}

@@ -1,0 +1,23 @@
+meta {
+  name: 05 Get our client
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/{{CLIENT_ID}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+assert {
+  res.status: eq 200
+  res.headers['content-type']: isDefined
+  res.headers['content-type']: eq application/json;charset=UTF-8
+  res.body: isJson 
+  res.body.clientId: eq {{CLIENT_NAME}}
+}

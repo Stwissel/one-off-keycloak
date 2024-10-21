@@ -1,0 +1,36 @@
+meta {
+  name: 03 Create REALM
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{KEYCLOAK_URL}}/admin/realms
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+body:json {
+  {
+      "id": "{{REALM_ID}}",
+      "realm": "{{REALM_NAME}}",
+      "displayName": "Display name for {{REALM_NAME}}",
+      "enabled": true,
+      "sslRequired": "NONE",
+      "registrationAllowed": true,
+      "loginWithEmailAllowed": true,
+      "duplicateEmailsAllowed": false,
+      "resetPasswordAllowed": true,
+      "editUsernameAllowed": true,
+      "bruteForceProtected": true
+  }
+}
+
+assert {
+  res.headers['location']: eq {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}
+  res.status: eq 201
+}

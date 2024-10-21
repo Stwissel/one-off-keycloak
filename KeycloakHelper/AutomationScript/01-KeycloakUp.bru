@@ -1,0 +1,20 @@
+meta {
+  name: 01 Check Keycloak is up and running
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{KEYCLOAK_URL}}
+  body: none
+  auth: none
+}
+
+script:pre-request {
+  req.setMaxRedirects(0);
+}
+
+assert {
+  res.headers['location']: eq {{KEYCLOAK_URL}}/admin/
+  res.status: eq 302
+}

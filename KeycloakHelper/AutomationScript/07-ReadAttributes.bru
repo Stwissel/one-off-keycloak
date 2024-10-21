@@ -1,0 +1,26 @@
+meta {
+  name: 07 Read User Attributes
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/users/profile
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+vars:post-response {
+  UserProfile: JSON.stringify(res.body)
+}
+
+assert {
+  res.status: eq 200
+  res.body: isJson
+  res.body.attributes: isArray
+  res.body.groups: isArray
+}

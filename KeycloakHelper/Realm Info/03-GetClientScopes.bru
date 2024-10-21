@@ -1,0 +1,37 @@
+meta {
+  name: 03 -Get List of client scope
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/client-scopes
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray 
+}
+
+tests {
+  // Look for client
+  test("Capture client-scopes", function () {
+  
+       let responseJSON = res.getBody();
+       expect(responseJSON).to.be.an('array');
+  
+      let clientScopes = {};
+      responseJSON.forEach(client => {
+          clientScopes[client.name] = client.id;
+      });
+      bru.setVar('CLIENT_SCOPES', JSON.stringify(clientScopes));
+  
+  
+  });
+}

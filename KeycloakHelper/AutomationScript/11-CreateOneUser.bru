@@ -1,0 +1,47 @@
+meta {
+  name: 11 Create One User
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/users
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+body:json {
+  {
+      "requiredActions": [],
+      "username": "{{USER_NAME}}",
+      "enabled": true,
+      "firstName": "{{USER_FIRSTNAME}}",
+      "lastName": "{{USER_LASTNAME}}",
+      "email": "{{USER_EMAIL}}",
+      "emailVerified": true,
+      "credentials": [
+          {
+              "type": "password",
+              "value": "{{USER_PASSWORD}}",
+              "temporary": false
+          }
+      ],
+      "attributes": {
+          "CN": "{{USER_CN}}"
+      }
+  }
+}
+
+vars:post-response {
+  USER_ID: res.headers['location'].substring(res.headers['location'].lastIndexOf('/')+1)
+}
+
+assert {
+  res.status: eq 201
+  res.headers['location']: isDefined
+  res.headers['location']: startsWith {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/users/
+}
