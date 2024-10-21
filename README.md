@@ -1,4 +1,4 @@
-# Keycloak initiliazation script
+# Keycloak Initialization Script
 
 The repository contains a [Bruno HTTP Client](https://usebruno.com) collection and environment to initialize a [KeyCloak](https://www.keycloak.org/) container. It can be run manually or in a CI/CD environment.
 
