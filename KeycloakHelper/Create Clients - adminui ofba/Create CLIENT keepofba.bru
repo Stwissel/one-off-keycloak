@@ -1,0 +1,35 @@
+meta {
+  name: Create CLIENT keepofba
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+body:json {
+  {
+      "clientId": "keepofba",
+      "name": "DRAPI Office Edit support",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true
+  }
+}
+
+vars:post-response {
+  CLIENT_OFBA: res.headers['location'].substring(res.headers['location'].lastIndexOf('/')+1)
+}
+
+assert {
+  res.status: eq 201
+  res.headers['location']: isDefined
+  res.headers['location']: startsWith {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/
+}

@@ -1,11 +1,11 @@
 meta {
-  name: 06 Map Scope to Client
+  name: Map $DATA to  keepadminui
   type: http
-  seq: 6
+  seq: 9
 }
 
 put {
-  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/{{CLIENT_ID}}/default-client-scopes/{{SCOPE_ID}}
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/{{CLIENT_ADMINUI}}/default-client-scopes/{{SCOPE_DATA}}
   body: json
   auth: none
 }

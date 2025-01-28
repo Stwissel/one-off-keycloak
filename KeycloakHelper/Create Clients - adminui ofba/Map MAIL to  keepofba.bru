@@ -1,11 +1,11 @@
 meta {
-  name: 06 Map Scope to Client
+  name: Map MAIL to  keepofba
   type: http
-  seq: 6
+  seq: 15
 }
 
 put {
-  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/{{CLIENT_ID}}/default-client-scopes/{{SCOPE_ID}}
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/{{CLIENT_OFBA}}/default-client-scopes/{{SCOPE_MAIL}}
   body: json
   auth: none
 }

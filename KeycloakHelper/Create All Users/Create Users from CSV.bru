@@ -1,0 +1,60 @@
+meta {
+  name: Create Users from CSV
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/users
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+body:json {
+  {
+      "requiredActions": [],
+      "username": "{{username}}",
+      "enabled": true,
+      "firstName": "{{firstname}}",
+      "lastName": "{{lastname}}",
+      "email": "{{email}}",
+      "emailVerified": true,
+      "credentials": [
+          {
+              "type": "password",
+              "value": "{{password}}",
+              "temporary": false
+          }
+      ],
+      "attributes": {
+          "CN": "{{CN}}"
+      }
+  }
+}
+
+vars:post-response {
+  USER_ID: res.headers['location'].substring(res.headers['location'].lastIndexOf('/')+1)
+}
+
+assert {
+  res.status: eq 201
+  res.headers['location']: isDefined
+  res.headers['location']: startsWith {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/users/
+}
+
+docs {
+  # Create users from CSV
+  
+  Have a csv file with this structure:
+  
+  |username    |firstname|lastname|email                        |CN                           |password|
+  | ---------- | ------- | ------ | --------------------------- | --------------------------- | ------ |
+  |gaaldornick |Gaal     |Dornick |gaaldornick@foundation.scifi |CN=Gaal Dornick/O=Foundation | ***    |
+  |salvorhardin|Salvor   |Hardin  |salvorhardin@foundation.scifi|CN=Salvor Hardin/O=Foundation| ***    |
+  |golantrevize|Golan    |Trevize |golantrevize@foundation.scifi|CN=Golan Trevize/O=Foundation| ***    |
+  |hobermallow |Hober    |Mallow  |hobermallow@foundation.scifi |CN=Hober Mallow/O=Foundation | ***    |
+}

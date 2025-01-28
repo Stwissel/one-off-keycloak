@@ -1,0 +1,35 @@
+meta {
+  name: Create CLIENT keepadminui
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{KEYCLOAK_ACCESS_TOKEN}}
+}
+
+body:json {
+  {
+      "clientId": "keepadminui",
+      "name": "DRAPI Admin UI",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true
+  }
+}
+
+vars:post-response {
+  CLIENT_ADMINUI: res.headers['location'].substring(res.headers['location'].lastIndexOf('/')+1)
+}
+
+assert {
+  res.status: eq 201
+  res.headers['location']: isDefined
+  res.headers['location']: startsWith {{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/clients/
+}
